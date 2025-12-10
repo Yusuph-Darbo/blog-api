@@ -1,0 +1,24 @@
+{
+  "name": "blog-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yusuph-Darbo/blogging-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Yusuph-Darbo/blogging-api/issues"
+  },
+  "homepage": "https://github.com/Yusuph-Darbo/blogging-api#readme",
+  "dependencies": {
+    "pg": "^8.16.3"
+  }
+}
