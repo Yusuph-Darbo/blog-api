@@ -11,6 +11,5 @@ const client = new Client({
 })
 
 await client.connect()
-const res = await client.query('select * from post');
-console.log(res.rows);
-await client.end();
+
+export default client
