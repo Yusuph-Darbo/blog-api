@@ -74,4 +74,24 @@ app.put('/posts/:id', async (req,res) => {
     }
 })
 
+app.delete('/posts/:id', async (req,res) => {
+    const id  = req.params.id
+
+    try {
+        const result = await client.query(
+            'DELETE FROM post WHERE post_id = $1 RETURNING *',
+            [id]
+        )
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Post not found' })
+        }
+
+        res.json({ message: `Post ${id} deleted successfully` })
+        
+    } catch (err) {
+        res.status(500).json({ error: err.message })
+    }
+})
+
 app.listen(8080, () => {console.log('It is live on http://localhost:8080')})
