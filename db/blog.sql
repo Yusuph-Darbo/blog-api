@@ -14,7 +14,8 @@ create table post (
 	content text,
 	author text,
 	category_id int references category(category_id),
-	created_at timestamp default current_timestamp
+	created_at timestamp default current_timestamp,
+	updated_at timestamp default current_timestamp
 );
 
 create table tags (
@@ -32,7 +33,7 @@ create table post_tags (
 
 
 -- Sample data
-INSERT INTO post (title, slug, content, author) VALUES
+insert into post (title, slug, content, author) values
 (
   'Getting Started with JavaScript',
   'getting-started-with-javascript',
@@ -51,3 +52,8 @@ INSERT INTO post (title, slug, content, author) VALUES
   'Render makes Node.js deployment easy. This guide walks through creating a service, linking your repo, and deploying.',
   'Liam Campbell'
 );
+
+insert into category(name, slug) values
+('JavaScript', 'javascript'),
+('Node.js', 'nodejs'),
+('API', 'api');

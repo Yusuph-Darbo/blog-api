@@ -2,7 +2,7 @@ import client from './db/databasepg.js'
 import express from 'express'
 
 const app = express()
-const PORT = 8080
+app.use(express.json());
 
 app.get('/posts', async (reg, res) => {
     try {
@@ -37,7 +37,7 @@ app.post('/posts', async (req, res) => {
     const {title, content, category_id} = req.body
     try {
         const result = await client.query(
-            'INSERT INTO post(title, content, category_id, created_at, updated_at) VALUES($1, $2, $3, NOW(), NOW()) RETURNING *',
+            'INSERT INTO post(title, content, category_id) VALUES($1, $2, $3) RETURNING *',
             [title, content, category_id]
         )
         res.status(200).json(result.rows[0])
@@ -47,7 +47,7 @@ app.post('/posts', async (req, res) => {
 })
 
 // Editing a post
-app.put('posts/:id', async (req,res) => {
+app.put('/posts/:id', async (req,res) => {
     const id  = req.params.id
     const {title, content, category_id} = req.body
 
@@ -74,7 +74,4 @@ app.put('posts/:id', async (req,res) => {
     }
 })
 
-app.listen(
-    PORT,
-    () => {console.log(`It is live on http://localhost:${PORT}`)}
-)
+app.listen(8080, () => {console.log('It is live on http://localhost:8080')})
