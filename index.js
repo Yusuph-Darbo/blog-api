@@ -21,7 +21,21 @@ app.get('/posts/:id', async (reg, res) => {
             return res.status(404).json({error: "Post not found"})
         }
         res.json(result.rows[0])
-    } catch {
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+})
+
+// Creating a new post
+app.post('/posts', async (req, res) => {
+    const {title, content, category_id} = req.body
+    try {
+        const result = await client.query(
+            'INSERT INTO post(title, content, category_id, created_at, updated_at) VALUES($1, $2, $3, NOW(), NOW()) RETURNING *',
+            [title, content, category_id]
+        )
+        res.status(200).json(result.rows[0])
+    } catch (err) {
         res.status(500).json({ error: err.message });
     }
 })
