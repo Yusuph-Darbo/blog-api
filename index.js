@@ -9,20 +9,26 @@ app.get('/posts', async (reg, res) => {
         const result = await client.query("select * from post")
         res.json(result.rows)
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: err.message })
     }
 })
 
 // Getting post by id
-app.get('/posts/:id', async (reg, res) => {
+app.get('/posts/:id', async (req, res) => {
+    // Get value not object
+    const {id}  = req.params
+
     try{
-        const result = await client.query("SELECT * FROM post WHERE post_id = $1")
+        const result = await client.query(
+            'SELECT * FROM post WHERE post_id = $1',
+            [id]
+        )
         if (result.rows.length === 0) {
             return res.status(404).json({error: "Post not found"})
         }
         res.json(result.rows[0])
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: err.message })
     }
 })
 
@@ -36,7 +42,7 @@ app.post('/posts', async (req, res) => {
         )
         res.status(200).json(result.rows[0])
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: err.message })
     }
 })
 
