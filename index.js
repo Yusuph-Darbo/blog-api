@@ -7,7 +7,8 @@ app.use(express.json());
 app.get('/posts', async (reg, res) => {
     try {
         const result = await client.query("select * from post")
-        res.json(result.rows)
+        res.status(200).json(result.rows[0])
+
     } catch (err) {
         res.status(500).json({ error: err.message })
     }
@@ -26,7 +27,7 @@ app.get('/posts/:id', async (req, res) => {
         if (result.rows.length === 0) {
             return res.status(404).json({error: "Post not found"})
         }
-        res.json(result.rows[0])
+        res.status(200).json(result.rows[0])
     } catch (err) {
         res.status(500).json({ error: err.message })
     }
@@ -34,13 +35,18 @@ app.get('/posts/:id', async (req, res) => {
 
 // Creating a new post
 app.post('/posts', async (req, res) => {
-    const {title, content, category_id} = req.body
+    const {title, content, author, category, tags} = req.body
+
+    if (!title || !content || !author || !category || !Array.isArray(tags)) {
+        return res.status(400).json({ error: 'Missing or invalid fields' });
+    }
+
     try {
         const result = await client.query(
-            'INSERT INTO post(title, content, category_id) VALUES($1, $2, $3) RETURNING *',
-            [title, content, category_id]
+            'INSERT INTO post(title, content, author, category, tags) VALUES($1, $2, $3, $4, $5) RETURNING *',
+            [title, content, author, category, tags]
         )
-        res.status(200).json(result.rows[0])
+        res.status(201).json(result.rows[0])
     } catch (err) {
         res.status(500).json({ error: err.message })
     }
@@ -49,7 +55,7 @@ app.post('/posts', async (req, res) => {
 // Editing a post
 app.put('/posts/:id', async (req,res) => {
     const id  = req.params.id
-    const {title, content, category_id} = req.body
+    const {title, content, author, category, tags} = req.body
 
     try{
 
@@ -57,18 +63,20 @@ app.put('/posts/:id', async (req,res) => {
             `UPDATE post
              SET title = $1,
                  content = $2,
-                 category_id = $3,
+                 author = $3,
+                 category = $4,
+                 tags = $5,
                  updated_at = NOW()
-             WHERE post_id = $4
+             WHERE post_id = $6
              RETURNING *`,
-            [title, content, category_id, id]
+            [title, content, author, category, tags, id]
         )
 
         if (result.rows.length === 0) {
             return res.status(404).json({error: "Post not found"})
         }
 
-        res.json(result.rows[0])
+        res.status(200).json(result.rows[0])
     } catch (err) {
         res.status(500).json({ error: err.message })
     }
