@@ -4,10 +4,35 @@ import express from 'express'
 const app = express()
 app.use(express.json());
 
-app.get('/posts', async (reg, res) => {
+app.get('/posts', async (req, res) => {
+    const {category, tags} = req.query
+
+    let query = 'SELECT * FROM post'
+    // Used to prevent SQL injection
+    const values = []
+    const conditions = []
+
+    // Checking if a query param was passed
+    if (category) {
+        values.push(category);
+        conditions.push(`category = $${values.length}`);
+    }
+
+    if (tags) {
+        // tags can be comma-separated
+        const tagArray = tags.split(',')
+        values.push(tagArray)
+        // '&&' operator checks if arrays overlap
+        conditions.push(`tags && $${values.length}::text[]`)
+    }
+
+    if (conditions.length > 0) {
+        query += ' WHERE ' + conditions.join(' AND ')
+    }
+
     try {
-        const result = await client.query("select * from post")
-        res.status(200).json(result.rows[0])
+        const result = await client.query(query, values)
+        res.status(200).json(result.rows)
 
     } catch (err) {
         res.status(500).json({ error: err.message })
