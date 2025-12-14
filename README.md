@@ -24,8 +24,8 @@ This API is designed as a learning project to practice backend development, data
 - **Node.js**
 - **Express**
 - **PostgreSQL**
-- **pg** (PostgreSQL client)
-- **Insomnia** / **Postman** for API testing
+- **DBeaver**
+- **Insomnia** for API testing
 
 ---
 
@@ -42,73 +42,47 @@ Before running the project, ensure you have the following installed:
 ## 🚀 Setup
 
 1. **Clone the repository**
-   ```bash
    git clone https://github.com/Yusuph-Darbo/blog-api.git
    cd blog-api
-````
 
-2. **Install dependencies**
+2. Install dependencies
 
-   ```bash
    npm install
-   ```
 
    or
 
-   ```bash
    yarn
-   ```
 
-3. **Create a `.env` file**
+3. Create a `.env` file
    Copy `.env.example` to `.env` and set your database connection and other environment variables:
 
-   ```env
    PORT=3000
    DATABASE_URL=postgres://user:password@localhost:5432/blogdb
-   ```
 
-4. **Set up the database**
+4. Set up the database
    Run database migrations if you’re using a migration tool (Sequelize, Knex, etc.).
    Otherwise, ensure your database schema is created manually.
 
-5. **Start the server**
+5. Start the server
 
-   ```bash
    npm start
-   ```
 
    or
 
-   ```bash
    yarn start
-   ```
 
 6. The API should now be running at:
    `http://localhost:<PORT>` (default: 3000)
 
----
 
-## 🧠 API Endpoints
+ 🧠 API Endpoints
 
-| Method | Endpoint      | Description           |
-| ------ | ------------- | --------------------- |
-| GET    | `/posts`      | Retrieve all posts    |
-| GET    | `/posts/:id`  | Retrieve a post by ID |
-| POST   | `/posts`      | Create a new post     |
-| PUT    | `/posts/:id`  | Update a post by ID   |
-| DELETE | `/posts/:id`  | Delete a post by ID   |
-| GET    | `/categories` | List all categories   |
-| GET    | `/tags`       | List all tags         |
-
-*(Add any other custom endpoints your API supports.)*
-
----
-
-## 📦 Dependencies
-
-Key packages used in this project:
-
-* **express** – Fast, unopinionated, minimalist web framework
-* **pg** – PostgreSQL client for Node.js
-* **dotenv** – Loads environment variables
-* *(Add others like body-parser, cors if used)*
+| Method | Endpoint    | Description           |
+| ------ | ----------- | --------------------- |
+| GET    | /posts      | Retrieve all posts    |
+| GET    | /posts/:id  | Retrieve a post by ID |
+| POST   | /posts      | Create a new post     |
+| PUT    | /posts/:id  | Update a post by ID   |
+| DELETE | /posts/:id  | Delete a post by ID   |
+| GET    | /categories | List all categories   |
+| GET    | /tags       | List all tags         |
