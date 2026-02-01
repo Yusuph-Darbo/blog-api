@@ -2,7 +2,7 @@ import app from "./server.js";
 import client from "./db/database.js";
 import type { Request, Response } from "express";
 import type { QueryResult } from "pg";
-import type post from "./types/posts.js";
+import type { posts, postUpdated } from "./types/posts.js";
 
 app.get("/posts", async (req: Request, res: Response): Promise<void> => {
   const { category, tags } = req.query;
@@ -67,7 +67,7 @@ app.get("/posts/:id", async (req: Request, res: Response): Promise<void> => {
   }
 
   try {
-    const result: QueryResult<post> = await client.query(
+    const result: QueryResult<posts> = await client.query(
       "SELECT * FROM post where post_id = $1",
       [id],
     );
@@ -86,6 +86,50 @@ app.get("/posts/:id", async (req: Request, res: Response): Promise<void> => {
     }
   }
 });
+
+// Editing a post
+app.put(
+  "/posts/:id",
+  async (
+    req: Request<{ id: string }, any, postUpdated>,
+    res: Response,
+  ): Promise<void> => {
+    const id = Number(req.params.id);
+
+    if (Number.isNaN(id)) {
+      res.status(400).json({ error: "Invalid post id" });
+      return;
+    }
+    const { title, content, author, category, tags } = req.body;
+
+    try {
+      const result = await client.query<posts>(
+        `UPDATE post
+             SET title = $1,
+                 content = $2,
+                 author = $3,
+                 category = $4,
+                 tags = $5,
+                 updated_at = NOW()
+             WHERE post_id = $6
+             RETURNING *`,
+        [title, content, author, category, tags, id],
+      );
+
+      if (result.rows.length === 0) {
+        res.status(400).json({ error: "Post not found" });
+      }
+
+      res.status(200).json(result.rows[0]);
+    } catch (err) {
+      if (err instanceof Error) {
+        res.status(500).json({ error: err.message });
+      } else {
+        res.status(500).json({ error: "Unknown error occurred" });
+      }
+    }
+  },
+);
 
 app.listen(3000, () => {
   console.log("Server running at http://localhost:3000");
