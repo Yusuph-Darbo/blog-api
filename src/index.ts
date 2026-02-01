@@ -135,6 +135,33 @@ app.put(
   },
 );
 
+// Creating a new post
+app.post(
+  "/posts",
+  async (req: Request<any, any, posts>, res: Response): Promise<void> => {
+    const { title, content, author, category, tags } = req.body;
+
+    if (!title || !content || !author || !category || !Array.isArray(tags)) {
+      res.status(400).json({ error: "Missing or invalid fields" });
+    }
+
+    try {
+      const result = await client.query(
+        "INSERT INTO post(title, content, author, category, tags) VALUES($1, $2, $3, $4, $5) RETURNING *",
+        [title, content, author, category, tags],
+      );
+
+      res.status(201).json(result.rows[0]);
+    } catch (err) {
+      if (err instanceof Error) {
+        res.status(500).json({ error: err.message });
+      } else {
+        res.status(500).json({ error: "Unknown error occurred" });
+      }
+    }
+  },
+);
+
 // Deleting a post
 app.delete("/posts/:id", async (req: Request, res: Response): Promise<void> => {
   const id = Number(req.params.id);
