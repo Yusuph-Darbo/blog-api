@@ -3,6 +3,9 @@ import client from "./db/database.js";
 import type { Request, Response } from "express";
 import type { QueryResult } from "pg";
 import type { posts, postUpdated } from "./types/posts.js";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
 
 app.get("/posts", async (req: Request, res: Response): Promise<void> => {
   const { category, tags } = req.query;
@@ -194,7 +197,7 @@ app.delete("/posts/:id", async (req: Request, res: Response): Promise<void> => {
 export default app;
 
 // Only start server if run directly
-if (require.main === module) {
+if (process.argv[1] === __filename) {
   app.listen(3000, () => {
     console.log("Server running at http://localhost:3000");
   });
