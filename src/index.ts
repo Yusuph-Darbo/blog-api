@@ -191,6 +191,11 @@ app.delete("/posts/:id", async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-app.listen(3000, () => {
-  console.log("Server running at http://localhost:3000");
-});
+export default app;
+
+// Only start server if run directly
+if (require.main === module) {
+  app.listen(3000, () => {
+    console.log("Server running at http://localhost:3000");
+  });
+}
