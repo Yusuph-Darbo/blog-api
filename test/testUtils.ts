@@ -1,3 +1,4 @@
+// Functional logic of creating a post without quering db so I can unittest it
 export function buildPostQuery(category?: string, tags?: string) {
   const values: (string | string[])[] = [];
   const conditions: string[] = [];
