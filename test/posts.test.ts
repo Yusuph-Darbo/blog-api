@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { buildPostQuery, editPostQuery } from "./testUtils.js";
+import { buildPostQuery, editPostQuery, deletePostQuery } from "./testUtils.js";
 
 describe("buildPostQuery", () => {
   it("should build query without filters", () => {
@@ -75,6 +75,18 @@ describe("editPostQuery", () => {
       category: "tech",
       tags: ["node"],
     });
+
+    expect(result.status).toBe(200);
+  });
+});
+
+describe("deletePostQuery", () => {
+  it("returns 200 when post is deleted", async () => {
+    const mockQuery = vi.fn().mockResolvedValue({
+      rows: [{ post_id: 1 }],
+    });
+
+    const result = await deletePostQuery(mockQuery, 1);
 
     expect(result.status).toBe(200);
   });
