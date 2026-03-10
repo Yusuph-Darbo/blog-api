@@ -90,4 +90,20 @@ describe("deletePostQuery", () => {
 
     expect(result.status).toBe(200);
   });
+
+  it("returns 400 for invalid id", async () => {
+    const result = await deletePostQuery(vi.fn(), NaN);
+
+    expect(result.status).toBe(400);
+  });
+
+  it("returns 404 if post does not exist", async () => {
+    const mockQuery = vi.fn().mockResolvedValue({
+      rows: [],
+    });
+
+    const result = await deletePostQuery(mockQuery, 1);
+
+    expect(result.status).toBe(404);
+  });
 });
