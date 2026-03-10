@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { buildPostQuery } from "./testUtils.js";
+import { describe, it, expect, vi } from "vitest";
+import { buildPostQuery, editPostQuery } from "./testUtils.js";
 
 describe("buildPostQuery", () => {
   it("should build query without filters", () => {
@@ -26,5 +26,56 @@ describe("buildPostQuery", () => {
       "SELECT * FROM post WHERE category = $1 AND tags && $2::text[]",
     );
     expect(result.values).toEqual(["tech", ["react", "typescript"]]);
+  });
+});
+
+describe("editPostQuery", () => {
+  it("should return 400 for invalid id", async () => {
+    const mockQuery = vi.fn();
+
+    const result = await editPostQuery(mockQuery, {
+      id: NaN,
+      title: "t",
+      content: "c",
+      author: "a",
+      category: "tech",
+      tags: ["node"],
+    });
+
+    expect(result.status).toBe(400);
+  });
+
+  it("should return 404 if the post doesn't exist", async () => {
+    const mockQuery = vi.fn().mockResolvedValue({ rows: [] });
+
+    const result = await editPostQuery(mockQuery, {
+      id: 1,
+      title: "t",
+      content: "c",
+      author: "a",
+      category: "tech",
+      tags: ["node"],
+    });
+
+    expect(result.status).toBe(404);
+  });
+
+  it("should return updated post if successful", async () => {
+    const fakePost = { post_id: 1, title: "Updated" };
+
+    const mockQuery = vi.fn().mockResolvedValue({
+      rows: [fakePost],
+    });
+
+    const result = await editPostQuery(mockQuery, {
+      id: 1,
+      title: "Updated",
+      content: "content",
+      author: "me",
+      category: "tech",
+      tags: ["node"],
+    });
+
+    expect(result.status).toBe(200);
   });
 });

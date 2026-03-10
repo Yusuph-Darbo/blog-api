@@ -25,17 +25,17 @@ export function buildPostQuery(category?: string, tags?: string) {
 }
 
 // Functional logic of editing a post
-export function editPostQuery(
+export async function editPostQuery(
   dbQuery: Function,
   input: UpdatePostInput,
-): UpdatePostResult {
+): Promise<UpdatePostResult> {
   const { id, title, content, author, category, tags } = input;
 
   if (Number.isNaN(id)) {
     return { status: 400, error: "Invalid post id" };
   }
 
-  const result = dbQuery(
+  const result = await dbQuery(
     `UPDATE post
              SET title = $1,
                  content = $2,
@@ -48,7 +48,7 @@ export function editPostQuery(
     [title, content, author, category, tags, id],
   );
 
-  if (result.rows.length === 0) {
+  if (!result.rows || result.rows.length === 0) {
     return { status: 404, error: "Post not found" };
   }
 
