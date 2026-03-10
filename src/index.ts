@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 
+// Gets all posts
 app.get("/posts", async (req: Request, res: Response): Promise<void> => {
   const { category, tags } = req.query;
 

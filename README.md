@@ -24,6 +24,7 @@ This project allows users to create, read, update, and delete blog posts, each w
 - **PostgreSQL**
 - **DBeaver**
 - **Insomnia** for API testing
+- **Vitest** for unit testing
 
 ---
 
