@@ -11,3 +11,9 @@ export type UpdatePostResult =
   | { status: 400; error: string }
   | { status: 200; data: any }
   | { status: 404; error: string };
+
+export type DeletePostResult =
+  | { status: 200; data: string }
+  | { status: 400; error: string }
+  | { status: 404; error: string }
+  | { status: 500; error: string };

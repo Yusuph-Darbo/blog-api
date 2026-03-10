@@ -1,4 +1,8 @@
-import type { UpdatePostInput, UpdatePostResult } from "../src/types/test.js";
+import type {
+  UpdatePostInput,
+  UpdatePostResult,
+  DeletePostResult,
+} from "../src/types/test.js";
 
 // Functional logic of creating a post without quering db so I can unittest it
 export function buildPostQuery(category?: string, tags?: string) {
@@ -48,9 +52,38 @@ export async function editPostQuery(
     [title, content, author, category, tags, id],
   );
 
-  if (!result.rows || result.rows.length === 0) {
+  if (result.rows.length === 0) {
     return { status: 404, error: "Post not found" };
   }
 
   return { status: 200, data: result.rows[0] };
+}
+
+// Functional logic of deleting a post
+export async function deletePostQuery(
+  dbQuery: Function,
+  id: number,
+): Promise<DeletePostResult> {
+  if (Number.isNaN(id)) {
+    return { status: 400, error: "Invalid post id" };
+  }
+
+  try {
+    const result = await dbQuery(
+      "DELETE FROM post WHERE post_id = $1 RETURNING *",
+      [id],
+    );
+
+    if (result.rows.length === 0) {
+      return { status: 404, error: "Post not found" };
+    }
+
+    return { status: 200, data: `Post ${id} deleted successfully` };
+  } catch (err) {
+    if (err instanceof Error) {
+      return { status: 500, error: err.message };
+    }
+
+    return { status: 500, error: "Unknown error occurred" };
+  }
 }
